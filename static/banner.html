@@ -1,0 +1,129 @@
+<h1>轮播图管理界面</h1>
+<button class="btn btn-success" data-toggle="modal" data-target="#exampleModal">添加</button>
+<table id="banner_table"></table>
+<div id="pager"></div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="exampleModalLabel">添加轮播图</h4>
+            </div>
+            <div class="modal-body">
+                <form action="" method="post">
+                    <div class="form-group">
+                        <label for="title" class="control-label">标题:</label>
+                        <input type="text" class="form-control" id="title">
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">状态:</label>
+                        <select class="form-control" id="status">
+                            <option value="不展示">0</option>
+                            <option value="展示">1</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="pic" class="control-label">请选择图片:</label>
+                        <input type="file" class="form-control" id="pic" accept="image/png,image/jpeg">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" onclick="add()">确认添加</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#banner_table').jqGrid({
+        url: "/banner/banner_list",
+        datatype: "json",
+        autowidth: true,
+        cellEdit: true,
+        pager: "#pager",
+        rowNum: 3,
+        rowList: [1, 2, 3, 4],
+        viewrecords: true,
+        editurl: "/banner/banner_opera/",
+        colNames: ["ID", "标题", "状态", "创建时间", "图片", "操作"],
+        colModel: [
+            {name: "id", height: "100px"},
+            {name: "title", height: "100px", editable: true},
+            {
+                name: "status",
+                height: "100px",
+                editable: true,
+                edittype: "select",
+                editoptions: {value: "不展示:不展示;展示:展示"}
+            },
+            {name: "create_time", height: "100px",},
+            {name: "pic", width: "50px",formatter:function (cellvalue, options, rowObject) {
+                    return "<img style=\"height:50px\" src='/static/"+ cellvalue +"'>"
+                }},
+            {
+                name: "opertion", height: "100px", formatter: function (cellvalue, options, rowObject) {
+                    return "<button class='btn btn-info' onclick=changefn(" + rowObject.id + ")>" + "修改" + "</button> " +
+                        "<button class='btn btn-danger' onclick=delfn(" + rowObject.id + ")>" + "删除" + "</button>"
+                }
+            },
+        ]
+    }).jqGrid('navGrid', "#page", {edit: true})
+
+    //修改函数
+    function changefn(ele) {
+        //
+        console.log(ele, '102hang');
+        $("#banner_table").jqGrid('editGridRow', ele, {
+            height: 300,
+            reloadAfterSubmit: true
+        });
+    }
+
+    //删除函数
+    function delfn(num) {
+        jQuery("#banner_table").jqGrid('delGridRow', num, {
+            reloadAfterSubmit: true
+        });
+    }
+
+    //添加函数
+    function add() {
+        title = $('#title').val()
+        state = $('#status').val()
+        pic = $('#pic')[0].files[0]
+        if (title != "" && pic != undefined) {
+            var formdata = new FormData()
+            formdata.append("title", title)
+            formdata.append("status", state)
+            formdata.append("pic", pic)
+            formdata.append("oper", "add")
+            $.ajax({
+                type: "post",
+                datatype: "json",
+                url:"/banner/banner_opera/",
+                data: formdata,
+                async:false,
+                contentType:false,
+                processData:false,
+                success: function (msg) {
+                    if (msg=="ok"){
+                        alert('添加成功')
+                        $('#exampleModal').modal('hide')
+                    }else{
+                        alert('添加失败')
+                    }
+                }
+            })
+        }else{
+            alert('不可少填')
+        }
+
+    }
+</script>
+<script>
+
+</script>
