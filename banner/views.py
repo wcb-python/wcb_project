@@ -29,7 +29,6 @@ def banner_list(request):
 
     rows = request.GET.get("rows")
     page_num = request.GET.get("page")
-    Banner.objects.all()
     pagtor = Paginator(Banner.objects.all(),rows)
     page = pagtor.page(page_num)
     data = {

@@ -126,7 +126,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 # 文件配置
-MEDIA_ROOT = os.path.join(BASE_DIR,"medid")
+MEDIA_ROOT = os.path.join(BASE_DIR,"media")
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS=[os.path.join(BASE_DIR,"static"),MEDIA_ROOT]
@@ -139,3 +139,14 @@ APIKEY = "40d6180426417bfc57d0744a362dc108"
 HOST = "192.168.248.143"
 PORT = 7000
 
+CACHES = {
+      "default": {
+         "BACKEND": "django_redis.cache.RedisCache", #Redis缓存入口，其中使用DefaultClient操作缓存
+         "LOCATION": "redis://192.168.248.143:7000/1", #ip:port/db_index
+         "OPTIONS": {
+           "CLIENT_CLASS": "django_redis.client.DefaultClient" #操作缓存的对象
+         }
+      }
+}
+
+SESSION_ENGINE='django.contrib.sessions.backends.cache' #存于缓存
