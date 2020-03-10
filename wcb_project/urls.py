@@ -21,4 +21,5 @@ urlpatterns = [
     path('manage_system/',include('manage_system.urls')),
     path('user/',include('user.urls')),
     path('banner/',include('banner.urls')),
+    path('article/',include('article.urls')),
 ]

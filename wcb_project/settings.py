@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'manage_system',
     'user',
     'banner',
+    'article'
 ]
 
 MIDDLEWARE = [
